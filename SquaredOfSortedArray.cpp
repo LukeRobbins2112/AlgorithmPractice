@@ -7,46 +7,29 @@ using namespace std;
 class Solution {
 public:
 
-	void PrintVec(const vector<int> & vec) {
-		cout << "Vector: {";
-		for (int i : vec) {
-			cout << i << " ";
-		}
-		cout << "}" << endl;
-	}
-
 	vector<int> sortedSquares(vector<int>& A) {
-
-		int posBegin = 0;
-		for (; posBegin < A.size(); posBegin++) {
-			if (A[posBegin] >= 0) {
-				std::reverse(begin(A), begin(A) + posBegin);
-				break;
-			}
-		}
-
-		std::transform(begin(A), end(A), begin(A), [](int n) {return n * n; });
-		int negPtr = 0, posPtr = posBegin;
 
 		vector<int> result(A.size());
 
-		int i = 0, j = posBegin, k = 0;
+		// Work from the outside in
+		int left = 0, right = A.size() - 1;
 
-		while (i < posBegin && j < A.size()) {
-			if (A[i] < A[j]) {
-				result[k++] = A[i];
-				i++;
+		// Fill in result array from the end (largest vals) to the beginning (smallest vals)
+		for (int ptr = right; ptr >= 0; ptr--) {
+
+			int negSquare = A[left] * A[left];
+			int posSquare = A[right] * A[right];
+
+			// Take max of the two squares, and update the winner's pointer
+			if (negSquare >= posSquare) {
+				result[ptr] = negSquare;
+				left++;
 			}
 			else {
-				result[k++] = A[j];
-				j++;
+				result[ptr] = posSquare;
+				right--;
 			}
 		}
-
-		while (i < posBegin) result[k++] = A[i++];
-		while (j < A.size()) result[k++] = A[j++];
-
-		PrintVec(result);
 
 		return result;
 	}
